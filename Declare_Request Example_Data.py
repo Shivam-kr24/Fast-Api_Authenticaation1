@@ -1,8 +1,6 @@
-from datetime import datetime, time, timedelta
 from enum import Enum
-from uuid import UUID
 
-from fastapi import Body, FastAPI, Query, Path, Cookie, Header
+from fastapi import Body, FastAPI, Query, Path
 from pydantic import BaseModel, Field, HttpUrl
 
 app = FastAPI()
@@ -246,89 +244,51 @@ app = FastAPI()
 #     return blahs
 
 ## Part 10 - Declare Request Example Data
-# class Item(BaseModel):
-#     name: str
-#     description: str | None = None
-#     price: float
-#     tax: float | None = None
-#
-#     # class Config:
-#     #     schema_extra = {
-#     #         "example": {
-#     #             "name": "Foo",
-#     #             "description": "A very nice Item",
-#     #             "price": 16.25,
-#     #             "tax": 1.67,
-#     #         }
-#     #     }
-#
-#
-# @app.put("/items/{item_id}")
-# async def update_item(
-#     item_id: int,
-#     item: Item = Body(
-#         ...,
-#         examples={
-#             "normal": {
-#                 "summary": "A normal example",
-#                 "description": "A __normal__ item works _correctly_",
-#                 "value": {
-#                     "name": "Foo",
-#                     "description": "A very nice Item",
-#                     "price": 16.25,
-#                     "tax": 1.67,
-#                 },
-#             },
-#             "converted": {
-#                 "summary": "An example with converted data",
-#                 "description": "FastAPI can convert price `strings` to actual `numbers` automatically",
-#                 "value": {"name": "Bar", "price": "16.25"},
-#             },
-#             "invalid": {
-#                 "summary": "Invalid data is rejected with an error",
-#                 "description": "Hello youtubers",
-#                 "value": {"name": "Baz", "price": "sixteen point two five"},
-#             },
-#         },
-#     ),
-# ):
-#     results = {"item_id": item_id, "item": item}
-#     return results
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
 
-## Part 11 - Extra Data Types
-# @app.put("/items/{item_id}")
-# async def read_items(
-#     item_id: UUID,
-#     start_date: datetime | None = Body(None),
-#     end_date: datetime | None = Body(None),
-#     repeat_at: time | None = Body(None),
-#     process_after: timedelta | None = Body(None),
-# ):
-#     start_process = start_date + process_after
-#     duration = end_date - start_process
-#     return {
-#         "item_id": item_id,
-#         "start_date": start_date,
-#         "end_date": end_date,
-#         "repeat_at": repeat_at,
-#         "process_after": process_after,
-#         "start_process": start_process,
-#         "duration": duration,
-#     }
+    # class Config:
+    #     schema_extra = {
+    #         "example": {
+    #             "name": "Foo",
+    #             "description": "A very nice Item",
+    #             "price": 16.25,
+    #             "tax": 1.67,
+    #         }
+    #     }
 
-## Part 12 - Cookie and Header Parameters
-@app.get("/items")
-async def read_items(
-    cookie_id: str | None = Cookie(None),
-    accept_encoding: str | None = Header(None),
-    sec_ch_ua: str | None = Header(None),
-    user_agent: str | None = Header(None),
-    x_token: list[str] | None = Header(None),
+
+@app.put("/items/{item_id}")
+async def update_item(
+    item_id: int,
+    item: Item = Body(
+        ...,
+        examples={
+            "normal": {
+                "summary": "A normal example",
+                "description": "A __normal__ item works _correctly_",
+                "value": {
+                    "name": "Foo",
+                    "description": "A very nice Item",
+                    "price": 16.25,
+                    "tax": 1.67,
+                },
+            },
+            "converted": {
+                "summary": "An example with converted data",
+                "description": "FastAPI can convert price `strings` to actual `numbers` automatically",
+                "value": {"name": "Bar", "price": "16.25"},
+            },
+            "invalid": {
+                "summary": "Invalid data is rejected with an error",
+                "description": "Hello youtubers",
+                "value": {"name": "Baz", "price": "sixteen point two five"},
+            },
+        },
+    ),
 ):
-    return {
-        "cookie_id": cookie_id,
-        "Accept-Encoding": accept_encoding,
-        "sec-ch-ua": sec_ch_ua,
-        "User-Agent": user_agent,
-        "X-Token values": x_token,
-    }
+    results = {"item_id": item_id, "item": item}
+    return results
